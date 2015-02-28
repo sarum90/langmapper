@@ -1,0 +1,24 @@
+application: mewert-langmap
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /
+  upload: static/index.html
+  static_files: static/index.html
+
+- url: /data.json
+  upload: data.json
+  static_files: data.json
+
+#- url: /data.json
+#  script: helloworld.application
+
+- url: /
+  static_dir: static/
+
+libraries:
+- name: pycrypto
+  version: "2.6"
