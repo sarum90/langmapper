@@ -95,26 +95,57 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
-table.dataTable tbody tr.stripe1 {
-  background-color: #EEE;
+body {
+  padding-top: 50px;
+}
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
 }
 
-table.dataTable tbody tr.stripe2 {
-  background-color: #BBB;
+
+.code {
+  font-family: monospace;
+  font-size: small;
 }
 
 
+.mapstyle {
+  height: 600px;
+  width: 1000px;
+}
 
+.processed {
+  margin: 5px;
+  padding: 5px;
+  border-width: 1px;
+  border: solid;
+  font-size: smaller;
+  bottom: 0px;
+  top: 0px;
+  border-color: black;
+}
 
+.column {
+  width: 50%;
+  margin: 0px;
+  border: 0px;
+  padding: 0px;
+}
 
+.filltable {
+  height: 100%;
+}
 
+#stderr {
+  color: red;
+}
 
+pre {
+  word-wrap: normal;
+}
 
-
-
-
-
-
+a.anchor{display: block; position: relative; top: -50px; visibility: hidden;}
 
 
 /* ==========================================================================

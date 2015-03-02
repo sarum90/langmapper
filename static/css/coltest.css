@@ -1,0 +1,32 @@
+
+#container{
+    width: 100%;
+    background-color: yellow;
+    min-height: 1px;
+}
+.column {
+    display: inline-block;
+    width: 49%;
+    margin: 0px;
+    border: 0px;
+    padding: 0px;
+    height: 1px;
+}
+#column1{
+    background-color: cyan;
+}
+#column2{
+    background-color: lime;
+}
+#clear{
+    clear: both;
+}
+
+.processed {
+  margin: 5px;
+  padding: 5px;
+  border-width: 1px;
+  border: solid;
+  font-size: small;
+  height: 100%
+}
