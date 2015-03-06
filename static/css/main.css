@@ -115,6 +115,12 @@ body {
   width: 1000px;
 }
 
+#code {
+  height: 600px;
+  width: 100%;
+  margin: 5px;
+}
+
 .processed {
   margin: 5px;
   padding: 5px;
@@ -124,6 +130,11 @@ body {
   bottom: 0px;
   top: 0px;
   border-color: black;
+  max-height: 600px;
+}
+
+#loadingbar {
+  margin: 5px
 }
 
 .column {

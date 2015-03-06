@@ -1,0 +1,355 @@
+
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+
+        <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap-theme.css">
+
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+
+        <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+              <div class="container">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" href="#">Language Mapper</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                  <ul class="nav navbar-nav">
+                    <li><a href="/">Home</a></li>
+                  </ul>
+                </div><!--/.nav-collapse -->
+              </div>
+            </nav>
+    <div class="container">
+      <h1>Tutorial</h1>
+      <ol>
+        <h2><li> Create a Google Form</li></h2>
+        <p>In this example, I went to the Google forms
+        <a href='http://www.google.com/forms/about/'>site</a>. You should be
+        able to construct the form using the help provided on the site. Once
+        your form is created be sure to save the results to a Google
+        spreadsheet rather than leaving the result only in forms.<br/>
+        </p>
+
+          <img class='center-block' src='img/screenshot1.png' width='800px' />
+          
+        <h2><li>Fill data into the Form</li></h2>
+        <p>In my case, this was filling out my 
+        <a href='https://docs.google.com/forms/d/1AZvq7lhWikb3uuywXLLtDr32yisZf_wnjSrCRwanXns/viewform?usp=send_form'>form</a>
+        for each of my favorite 3 letter animal names that also might happen to
+        be ISO codes for languages.
+        </p>
+
+        <h2><li>View your results in Google spreadsheets</li></h2>
+        <p> After entering all my data it was available
+        <a href='https://docs.google.com/spreadsheets/d/1gmMh5SPglbH9oveADHM3CyWcWaJM--ZuS6svjU68LDI/edit?usp=sharing'>here</a>.
+        </p>
+
+        <h2><li>Share your results with the Lang Map service account.</li></h2>
+        Click the Share button on the spreadsheet of form results:<br/>
+
+        <img class='center-block' src='img/screenshot2.png' width='800px' />
+
+        <p>And give view permissions to the service account used by this website:</p>
+
+        <img class='center-block' src='img/screenshot3.png' width='800px' />
+
+        <p> The account to share it with is: 489541795175-qu1ub95lv6fj41hiim01f1bdccqo17c8@developer.gserviceaccount.com </p>
+
+        <h2><li>Find your worksheet on the main page</li></h2>
+        Navigate to the <a href='/'>homepage</a> and you should be able to see
+        your worksheet now. Click the link and wait a few seconds while it
+        retrieves data from google sheets.
+        <img class='center-block' src='img/screenshot4.png' width='800px' />
+
+        <h2><li>View your first data row in JSON form</li></h2>
+
+        <p>First of all, pardon me if this interface seems sort of clunky. I
+        hope you find this tool useful, but I'm not a front-end or usability
+        expert by any means.</p>
+
+        <p>Once the data have been loaded, you should be able to see the first row
+        of your spreadsheet in JSON form. If you're lucky the site will also
+        have automatically determined that one of the columns of your data was
+        the ISO of the language. If that happened, you should also see some
+        additional language data downloaded from glottolog.org in that box.</p>
+
+        <img class='center-block' src='img/screenshot5.png' width='800px' />
+
+        <h2><li>Python Round 1: A New Interface</li></h2>
+
+        <p>The next thing on the page is an empty box labelled "Output" and
+        finally a dark box for Python code. This box can be used to write
+        python that can be used to process and map the data in your
+        spreadsheet.</p>
+
+        <p>The function named "process" is special. It will be called once for
+        each row in your Google Spreadsheet. This function will take two
+        arguments, 'record' (a dict from your spreadsheet) and 'glotto' (a dict
+        for the corresponding language on glottolog.org).</p>
+
+        <p>To help you visualize what these dicts contain you can look at the
+        Input box.</p>
+
+        <p> For starters, let's write a really simple processing function that
+        just returns the row from our data and press "Run On Single Input".</p>
+
+<pre>
+def process(record, glotto):
+    return record
+</pre>
+ 
+        <p>We see after pressing Run on Single Input that the output is simply
+        the "record" portion of the input as expected.</p>
+
+        <img class='center-block' src='img/screenshot6.png' width='800px' />
+
+        <p> Since that looks good (although the keys are a bit long). Let's
+        press "Map All". At this point scroll down to the bottom of the page.
+        You'll notice the Map was empty, we'll get to that later, but at the
+        bottom of the page there is a full table, with one entry for each of
+        the processed values. </p>
+
+        <img class='center-block' src='img/screenshot7.png' width='800px' />
+
+        <h2><li>Python Round 2: Cleaning the Data</li></h2>
+
+        <p>
+        Before we get into some of the fancier features of the site. I'd like
+        to start by making the data look a bit cleaner. Specifically, right now
+        the keys of the records are long and sloppy, and I'd like to convert
+        the long keys to shorter ones that are easier to type and remember.
+        </p>
+
+        <p>
+        In addition, I'd like to create some derivative data. Lets try to turn
+        the uses of each animal into a proper python list, and record the
+        number of uses in a different column.
+        </p>
+
+<h3> New Code</h3>
+
+<pre>
+remapping = {
+      "letteranimalthatisalsoalanguageisocode": "iso",
+      "sizeoftheanimal": "size",
+      "whywouldsomeoneraiseorowntheanimal": "uses"
+  }
+
+def remap(record):
+    result = {}
+    for k in record:
+        if k in remapping:
+            result[remapping[k]] = record[k]
+    return result
+
+def process(record, glotto):
+    result = remap(record)
+    result['uses'] = [] if not result['uses'] else result['uses'].split(',')
+    result['num_uses'] = len(result['uses'])
+</pre>
+
+<h3> New Output</h3>
+<pre>
+{
+    "iso": "bee",
+    "size": "Small",
+    "uses": [
+        "Produced non-meat food"
+    ],
+    "num_uses": 1
+}
+</pre>
+        
+        <p>That looks much better</p>
+
+        <h2><li>Python Round 3: Maps</li></h2>
+<p> Now that we've got a nice clean source of data, it's time to try to put
+things to the map. While we're at it, we should also probably get the language
+name for the codes we've invented. To do this, we can simply grab the 'name',
+'longitude', and 'latitude' fields from the glotto dict.</p>
+
+<p> Note that these three fields are special on the LangMap website. If you
+return a python dictionary with both a 'longitude' and a 'latitude' key it will
+draw a dot on the world map at that location. If the dictionary that you return
+has a key named 'name' then that will be the mouseover text when you hover over
+that dot on the map.</p>
+
+<h3> New Code</h3>
+<pre>
+remapping = {
+      "letteranimalthatisalsoalanguageisocode": "iso",
+      "sizeoftheanimal": "size",
+      "whywouldsomeoneraiseorowntheanimal": "uses"
+  }
+
+def remap(record):
+    result = {}
+    for k in record:
+        if k in remapping:
+            result[remapping[k]] = record[k]
+    return result
+
+def process(record, glotto):
+    result = remap(record)
+    result['uses'] = [] if not result['uses'] else result['uses'].split(',')
+    result['num_uses'] = len(result['uses'])
+    result['longitude'] = glotto.get('longitude')
+    result['latitude'] = glotto.get('latitude')
+    result['name'] = glotto.get('name')
+    return result
+</pre>
+
+<p>Then pressing Map All...</p>
+
+<h3> New Map</h3>
+        <img class='center-block' src='img/screenshot8.png' width='800px' />
+
+<p>TaDa! We have a graph. Unfortunately there are some suspicious dots in the
+middle of the ocean. Scrolling down to the Table we can see that 'pig' and
+'owl' do not actually correspond to the ISO code for any real languages. 
+Instead it seems we just got markers placed at (0,0) for those languages. In
+the next section we'll look at removing them.</p>
+
+        <h2><li>Python Round 4: Filtering</li></h2>
+
+<p>You don't have to return a valid dict for every language you are passed.
+Instead, if a given language is uninteresting you can just return "None". In
+our case, we want to return "None" if there is no glotto data for that entry as
+that will prevent us from being able map them. For real data it might be more
+interesting to filter the data based on region or features while diving into
+specific phenomena.</p>
+
+<pre>
+remapping = {
+      "letteranimalthatisalsoalanguageisocode": "iso",
+      "sizeoftheanimal": "size",
+      "whywouldsomeoneraiseorowntheanimal": "uses"
+  }
+
+def remap(record):
+    result = {}
+    for k in record:
+        if k in remapping:
+            result[remapping[k]] = record[k]
+    return result
+
+def process(record, glotto):
+    if not glotto:
+        return None
+    result = remap(record)
+    result['uses'] = [] if not result['uses'] else result['uses'].split(',')
+    result['num_uses'] = len(result['uses'])
+    result['longitude'] = glotto.get('longitude')
+    result['latitude'] = glotto.get('latitude')
+    result['name'] = glotto.get('name')
+    return result
+</pre>
+
+<p> Pressing "Map All" and investigating the Map and the Table shows this has
+had the desired effect.</p>
+
+        <h2><li>Python Round 5: Colors</li></h2>
+<p>Just like for 'longitude', 'latitude', and 'name' there is also a special
+key 'color' that can be used to set the color of the dot on the world map. To
+specify a color, you must specify the color in terms of quantities of red,
+green, and blue. These values must be expressed from 0 to 255 in a list.</p>
+
+<p>For example <code> [255, 0, 0] </code> is bright red,
+<code> [255, 0, 255]</code> is bright purple, and <code> [0, 0, 0] </code> is
+black.  Searching the internet for RGB and Color Pickers will give you a bit of
+context as to why colors are done this way, as well as give you nice tools to
+learn the RGB values of any colors you wish to use.</p>
+
+<p>Using this information we can set the color of each dot based on the size of
+the animal corresponding to it's ISO code using the following code:</p>
+
+<h3>Final Code</h3>
+
+<pre>
+remapping = {
+      "letteranimalthatisalsoalanguageisocode": "iso",
+      "sizeoftheanimal": "size",
+      "whywouldsomeoneraiseorowntheanimal": "uses"
+  }
+  
+red = [170, 0, 0]
+green = [0, 170, 0]
+blue = [0, 0, 170]
+
+def setColor(result):
+    size = result['size']
+    if size == 'Small':
+        result['color'] = red
+    elif size == 'Medium':
+        result['color'] = green
+    else:
+        result['color'] = blue
+
+def remap(record):
+    result = {}
+    for k in record:
+        if k in remapping:
+            result[remapping[k]] = record[k]
+    return result
+
+def process(record, glotto):
+    if not glotto:
+        return None
+    result = remap(record)
+    result['uses'] = [] if not result['uses'] else result['uses'].split(',')
+    result['num_uses'] = len(result['uses'])
+    result['longitude'] = glotto.get('longitude')
+    result['latitude'] = glotto.get('latitude')
+    result['name'] = glotto.get('name')
+    setColor(result)
+    return result
+</pre>
+
+<h3>Final Map</h3>
+<p> In this map I've colored all the Large animals blue, the Medium animals
+Green, and the Small animals red. </p>
+
+        <img class='center-block' src='img/screenshot9.png' width='800px' />
+
+<p> From this it can clearly be seen that the further West a language is spoken
+the larger the animal that corresponds to it's ISO code is. I don't think this
+result should come as a surprise to anyone.</p>
+
+<p> Hopefully this tutorial/guide has been helpful, and if you have any
+additional questions please feel free to reach out to me at sarum90@gmail.com. </p>
+
+-Cheers<br>
+Marcus
+
+      </ol>
+
+    </div><!-- /.container -->
+    </body>
+</html>
