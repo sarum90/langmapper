@@ -1,96 +1,25 @@
 import webapp2
 import jinja2
 
-import urllib2
-
 import os
 
 import json
+import pickle
 import sheetloader
 import string
-from pyglottolog.glottodata import GlottoData
-from google.appengine.api import files
-
-from google.appengine.ext import ndb
-
-_GENETICS_URL = 'http://glottolog.org/resource/languoid/id/%s.json'
-
-def DownloadLanguageGenetics(key):
-  """Downloads the language genetics for language named key."""
-  url = _GENETICS_URL % key
-  response = urllib2.urlopen(url)
-  return response.read()
-
-BUCKET_NAME = 'mewert-langmap.appspot.com'
-BUCKET = '/gs/' + BUCKET_NAME
-
-def _GetPathFor(glotto_key):
-  return os.path.join(BUCKET, 'glotto', glotto_key)
-
-def SaveData(glotto_key, data):
-  filename = _GetPathFor(glotto_key)
-  writable_file_name = files.gs.create(filename, acl='project-private')
-  print "saving"
-  print filename
-  print writable_file_name
-  with files.open(writable_file_name, 'a') as f:
-    f.write(data)
-  files.finalize(writable_file_name)
-
-def GetData(glotto_key):
-  filename = _GetPathFor(glotto_key)
-  retvals = []
-  try:
-    with files.open(filename, 'r') as f:
-      data = f.read(1000)
-      while data:
-        retvals.append(data)
-        data = f.read(1000)
-  except files.ExistenceError:
-    print filename
-    print "none?"
-    return None
-  return "".join(retvals)
-
-def DownloadAndSaveLanguageGenetics(key):
-  jsondata = DownloadLanguageGenetics(key)
-  SaveData(key, jsondata)
-  return jsondata
-
-def LoadLanguageGenetics(key):
-  return GetData(key)
-
-def GetSaveGenetics(key):
-  data = ''
-  saved = LoadLanguageGenetics(key)
-  if saved:
-    data = saved
-  else:
-    data = DownloadAndSaveLanguageGenetics(key)
-  return json.loads(data)
-
-
-print GetSaveGenetics('byan1241')
-print GetSaveGenetics('byan1241')
-print "Getting"
-print GetData("demo-testfile")
-print "Setting"
-SaveData("demo-testfile", "ohhai")
-print "Getting"
-print GetData("demo-testfile")
-print GetSaveGenetics('byan1241')
-
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
-db = GlottoData()
 glotto_by_iso = {}
+glotto_by_glottocode = {}
 
-for lang in db.GetLanguages():
-  glotto_by_iso[lang.get('hid')] = lang
+with open('glottodata.pickle', 'r') as f:
+  data = pickle.load(f)
+  glotto_by_iso = data
+  glotto_by_glottocode = data
 
 def ISOColumn(data):
   results = {}
