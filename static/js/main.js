@@ -346,7 +346,8 @@ $(document).ready( function () {
         "def process(record, glotto):\n" +
         "    result = remap(record)\n" +
         "    result['uses'] = [] if not result['uses'] else result['uses'].split(',')\n" +
-        "    result['num_uses'] = len(result['uses'])\n"
+        "    result['num_uses'] = len(result['uses'])\n" +
+        "    return result\n"
     },
     "tut3": {
       name: "Tutorial 3: Maps",
@@ -370,7 +371,7 @@ $(document).ready( function () {
         "    result['num_uses'] = len(result['uses'])\n" +
         "    result['longitude'] = glotto.get('longitude')\n" +
         "    result['latitude'] = glotto.get('latitude')\n" +
-        "    result['name'] = glotto.get('name')\n" +
+        "    result['name'] = glotto.get('name').get('name')\n" +
         "    return result\n"
     },
     "tut4": {
@@ -390,14 +391,14 @@ $(document).ready( function () {
         "    return result\n" +
         "\n" +
         "def process(record, glotto):\n" +
-        "    if not glotto:\n" +
+        "    if not glotto or 'latitude' not in glotto:\n" +
         "        return None\n" +
         "    result = remap(record)\n" +
         "    result['uses'] = [] if not result['uses'] else result['uses'].split(',')\n" +
         "    result['num_uses'] = len(result['uses'])\n" +
         "    result['longitude'] = glotto.get('longitude')\n" +
         "    result['latitude'] = glotto.get('latitude')\n" +
-        "    result['name'] = glotto.get('name')\n" +
+        "    result['name'] = glotto.get('name').get('name')\n" +
         "    return result\n"
     },
     "tut5": {
@@ -430,14 +431,14 @@ $(document).ready( function () {
         "    return result\n" +
         "\n" +
         "def process(record, glotto):\n" +
-        "    if not glotto:\n" +
+        "    if not glotto or 'latitude' not in glotto:\n" +
         "        return None\n" +
         "    result = remap(record)\n" +
         "    result['uses'] = [] if not result['uses'] else result['uses'].split(',')\n" +
         "    result['num_uses'] = len(result['uses'])\n" +
         "    result['longitude'] = glotto.get('longitude')\n" +
         "    result['latitude'] = glotto.get('latitude')\n" +
-        "    result['name'] = glotto.get('name')\n" +
+        "    result['name'] = glotto.get('name').get('name')\n" +
         "    setColor(result)\n" +
         "    return result\n"
     },
@@ -471,14 +472,14 @@ $(document).ready( function () {
         "    return result\n" +
         "\n" +
         "def process(record, glotto):\n" +
-        "    if not glotto:\n" +
+        "    if not glotto or 'latitude' not in glotto:\n" +
         "        return None\n" +
         "    result = remap(record)\n" +
         "    result['uses'] = [] if not result['uses'] else result['uses'].split(',')\n" +
         "    result['num_uses'] = len(result['uses'])\n" +
         "    result['longitude'] = glotto.get('longitude')\n" +
         "    result['latitude'] = glotto.get('latitude')\n" +
-        "    result['name'] = glotto.get('name')\n" +
+        "    result['name'] = glotto.get('name').get('name')\n" +
         "    setColor(result)\n" +
         "    return result\n" +
         "\n" +
@@ -590,16 +591,16 @@ $(document).ready( function () {
         '\n' +
         '\n' +
         'NAME = "Number of Dialects"\n' +
-        'GLOTTO_KEY = "child_dialect_count"\n' +
+        'GLOTTO_KEY = "children"\n' +
         'BIN_LINES = [1, 2, 3, 4, 6, 8, 12]\n' +
         '\n' +
         'def process(unused_record, glotto):\n' +
-        '  if not glotto:\n' +
+        '  if not glotto or "latitude" not in glotto:\n' +
         '    return None\n' +
-        '  val = glotto.get(GLOTTO_KEY)\n' +
+        '  val = len(glotto.get(GLOTTO_KEY, []))\n' +
         '  return {\n' +
-        '      "ISO": glotto.get("hid"),\n' +
-        '      "name": "%s (%d)" % (glotto.get("name"), val),\n' +
+        '      "ISO": glotto.get("iso"),\n' +
+        '      "name": "%s (%d)" % (glotto.get("name").get("name"), val),\n' +
         '      GLOTTO_KEY: val,\n' +
         '      "longitude": glotto.get("longitude"),\n' +
         '      "latitude": glotto.get("latitude"),\n' +

@@ -185,6 +185,7 @@ def process(record, glotto):
     result = remap(record)
     result['uses'] = [] if not result['uses'] else result['uses'].split(',')
     result['num_uses'] = len(result['uses'])
+    return result
 </pre>
 
 <h3> New Output</h3>
@@ -206,6 +207,17 @@ def process(record, glotto):
 things to the map. While we're at it, we should also probably get the language
 name for the codes we've invented. To do this, we can simply grab the 'name',
 'longitude', and 'latitude' fields from the glotto dict.</p>
+
+        <div class="alert alert-info" role="alert">
+          <h4>Pro Tip: record.get('name').get('name')</h4>
+
+          Here we call <code>record.get('name').get('name')</code> because as
+          you might notice in the Input box, "name" is actually a dict that
+          expresses both the language the name is specified in, and the name
+          of the language itself. In order to get just a string we have to
+          navigate down the additional layer.
+          
+        </div>
 
 <p> Note that these three fields are special on the LangMap website. If you
 return a python dictionary with both a 'longitude' and a 'latitude' key it will
@@ -234,7 +246,7 @@ def process(record, glotto):
     result['num_uses'] = len(result['uses'])
     result['longitude'] = glotto.get('longitude')
     result['latitude'] = glotto.get('latitude')
-    result['name'] = glotto.get('name')
+    result['name'] = glotto.get('name').get('name')
     return result
 </pre>
 
@@ -244,19 +256,19 @@ def process(record, glotto):
         <img class='center-block' src='img/screenshot8.png' width='800px' />
 
 <p>TaDa! We have a graph. Unfortunately there are some suspicious dots in the
-middle of the ocean. Scrolling down to the Table we can see that 'pig' and
-'owl' do not actually correspond to the ISO code for any real languages. 
-Instead it seems we just got markers placed at (0,0) for those languages. In
-the next section we'll look at removing them.</p>
+middle of the ocean. Scrolling down to the Table we can see that 'owl' does not
+have any longitude/latitude data. Instead it seems we just got markers placed
+at (0,0) for that language. In the next section we'll look at removing that
+point.</p>
 
         <h2><li>Python Round 4: Filtering</li></h2>
 
 <p>You don't have to return a valid dict for every language you are passed.
 Instead, if a given language is uninteresting you can just return "None". In
-our case, we want to return "None" if there is no glotto data for that entry as
-that will prevent us from being able map them. For real data it might be more
-interesting to filter the data based on region or features while diving into
-specific phenomena.</p>
+our case, we want to return "None" if there is no glotto data for that entry or
+if we don't have longitude/latitude data for a point, as that will prevent us
+from being able map them. For real data it might be more interesting to filter
+the data based on region or features while diving into specific phenomena.</p>
 
 <pre>
 remapping = {
@@ -273,14 +285,14 @@ def remap(record):
     return result
 
 def process(record, glotto):
-    if not glotto:
+    if not glotto or 'latitude' not in glotto:
         return None
     result = remap(record)
     result['uses'] = [] if not result['uses'] else result['uses'].split(',')
     result['num_uses'] = len(result['uses'])
     result['longitude'] = glotto.get('longitude')
     result['latitude'] = glotto.get('latitude')
-    result['name'] = glotto.get('name')
+    result['name'] = glotto.get('name').get('name')
     return result
 </pre>
 
@@ -332,14 +344,14 @@ def remap(record):
     return result
 
 def process(record, glotto):
-    if not glotto:
+    if not glotto or 'latitude' not in glotto:
         return None
     result = remap(record)
     result['uses'] = [] if not result['uses'] else result['uses'].split(',')
     result['num_uses'] = len(result['uses'])
     result['longitude'] = glotto.get('longitude')
     result['latitude'] = glotto.get('latitude')
-    result['name'] = glotto.get('name')
+    result['name'] = glotto.get('name').get('name')
     setColor(result)
     return result
 </pre>
@@ -407,14 +419,14 @@ def remap(record):
     return result
 
 def process(record, glotto):
-    if not glotto:
+    if not glotto or 'latitude' not in glotto:
         return None
     result = remap(record)
     result['uses'] = [] if not result['uses'] else result['uses'].split(',')
     result['num_uses'] = len(result['uses'])
     result['longitude'] = glotto.get('longitude')
     result['latitude'] = glotto.get('latitude')
-    result['name'] = glotto.get('name')
+    result['name'] = glotto.get('name').get('name')
     setColor(result)
     return result
 
