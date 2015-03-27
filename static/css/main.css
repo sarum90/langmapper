@@ -115,6 +115,29 @@ body {
   width: 1000px;
 }
 
+.mapkey {
+  border: solid;
+  border-width: 1px;
+  margin: 5px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 1000px;
+}
+
+.mapkeyname {
+  text-align: center;
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border: solid;
+  border-width: 1px;
+  display: inline-block;
+  margin-right: 5px;
+  background-color: #000000;
+}
+
 #code {
   height: 600px;
   width: 100%;

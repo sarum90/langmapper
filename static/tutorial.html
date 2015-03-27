@@ -120,6 +120,17 @@
         <p> For starters, let's write a really simple processing function that
         just returns the row from our data and press "Run On Single Input".</p>
 
+        <div class="alert alert-info" role="alert">
+          <h4>Pro Tip: Examples</h4>
+          
+          <p>Any time this totorial has a code sample, if you are following
+          along on the site, you can use the Example drop down to quickly load
+          the code into your browser.</p>
+
+        <img class='center-block' src='img/screenshot11.png' width='800px' />
+          
+        </div>
+
 <pre>
 def process(record, glotto):
     return record
@@ -130,11 +141,12 @@ def process(record, glotto):
 
         <img class='center-block' src='img/screenshot6.png' width='800px' />
 
-        <p> Since that looks good (although the keys are a bit long). Let's
-        press "Map All". At this point scroll down to the bottom of the page.
-        You'll notice the Map was empty, we'll get to that later, but at the
-        bottom of the page there is a full table, with one entry for each of
-        the processed values. </p>
+        <p> That looks good. The keys are a bit long, but we can fix that up
+        later. For now, we've confirmed that this will run on a single input,
+        so let's press "Map All" to run our python on all of the rows. At this
+        point scroll down to the bottom of the page.  You'll notice the Map was
+        empty, we'll get to that later, but at the bottom of the page there is
+        a full table, with one entry for each of the processed values. </p>
 
         <img class='center-block' src='img/screenshot7.png' width='800px' />
 
@@ -290,7 +302,7 @@ learn the RGB values of any colors you wish to use.</p>
 <p>Using this information we can set the color of each dot based on the size of
 the animal corresponding to it's ISO code using the following code:</p>
 
-<h3>Final Code</h3>
+<h3>New Code</h3>
 
 <pre>
 remapping = {
@@ -332,7 +344,7 @@ def process(record, glotto):
     return result
 </pre>
 
-<h3>Final Map</h3>
+<h3>Colored Map</h3>
 <p> In this map I've colored all the Large animals blue, the Medium animals
 Green, and the Small animals red. </p>
 
@@ -342,8 +354,97 @@ Green, and the Small animals red. </p>
 the larger the animal that corresponds to it's ISO code is. I don't think this
 result should come as a surprise to anyone.</p>
 
+        <h2><li>Python Round 6: Adding a Map Key</li></h2>
+
+<p>The above map is useful, but requires the viewer to look at the python in
+order to determine what the colors mean. Instead, if you intend on showing your
+map to another person, it's nice to add a legend to explain the meaning of the
+colors. The LangMap server will let you do that by defining another special
+function named 'key'</p>
+
+<p>This function takes no arguments and should return a dict with the following
+form:</p>
+
+<pre>
+{
+  "name": "Title-Of-The-Key",
+  "keys": [ # Array of (color, name) tuples
+     ([170, 0, 0], "Red Label Text"),
+     ([0, 170, 0], "Green Label Text")
+  ]
+}
+</pre>
+
+<p> Again the colors should be specified as arrays of [Red, Green, Blue] as
+before. Using this tool with our exiting code, the new code becomes: </p>
+
+<h3>Final Code</h3>
+<pre>
+remapping = {
+      "letteranimalthatisalsoalanguageisocode": "iso",
+      "sizeoftheanimal": "size",
+      "whywouldsomeoneraiseorowntheanimal": "uses"
+  }
+  
+red = [170, 0, 0]
+green = [0, 170, 0]
+blue = [0, 0, 170]
+
+def setColor(result):
+    size = result['size']
+    if size == 'Small':
+        result['color'] = red
+    elif size == 'Medium':
+        result['color'] = green
+    else:
+        result['color'] = blue
+
+def remap(record):
+    result = {}
+    for k in record:
+        if k in remapping:
+            result[remapping[k]] = record[k]
+    return result
+
+def process(record, glotto):
+    if not glotto:
+        return None
+    result = remap(record)
+    result['uses'] = [] if not result['uses'] else result['uses'].split(',')
+    result['num_uses'] = len(result['uses'])
+    result['longitude'] = glotto.get('longitude')
+    result['latitude'] = glotto.get('latitude')
+    result['name'] = glotto.get('name')
+    setColor(result)
+    return result
+
+def key():
+    return {
+          "name": "Size of Animal",
+          "key": [
+                 (red, "Small"),
+                 (green, "Medium"),
+                 (blue, "Large")
+              ]
+        }
+</pre>
+
+<h3>Final Map</h3>
+        <img class='center-block' src='img/screenshot10.png' width='800px' />
+
+        <h2><li>Closing Words</li></h2>
+
+<p>At this point you should have all the tools you need to write arbitrarily
+complex python functions to color languages on the world map. If you still feel
+you need a bit more time and want to see a few more examples before you go out
+and write your own filters and coloring functions, please feel free to look at
+other examples from the Example drop down. Perhaps these will already be close
+to what you are looking for, and you can just change a few things to get the
+visualization you desire.</p>
+
 <p> Hopefully this tutorial/guide has been helpful, and if you have any
-additional questions please feel free to reach out to me at sarum90@gmail.com. </p>
+additional questions please feel free to reach out to me at sarum90@gmail.com.
+</p>
 
 -Cheers<br>
 Marcus

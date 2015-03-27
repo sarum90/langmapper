@@ -37,6 +37,8 @@ class GlottoData(object):
     self._data_dir = os.path.join(_base_dir, data_dir)
     self._snapshot_dir = os.path.join(self._data_dir, 'snapshot')
     self._download_dir = os.path.join(self._data_dir, 'download')
+    self._detailed_snapshot_dir = os.path.join(self._data_dir, 'snapshot')
+    self._detailed_download_dir = os.path.join(self._data_dir, 'download')
     self._log = logger or _NopLogger
     self._languages = None
 
@@ -53,8 +55,20 @@ class GlottoData(object):
   def _ListFiles(self):
     return sorted(os.listdir(self._snapshot_dir))
 
+  def _SetupSnapshotDirUtil(self._data_dir, snapshot_dir, download_dir):
+    """If it doesn't exist, create the data dir."""
+    if os.path.exists(snapshot_dir):
+      self._log('Using the local data cache at %s.' % self._data_dir)
+      return
+    self._log('Creating a local data cache at %s.' % self._data_dir)
+    os.mkdir(self._data_dir)
+    if os.path.exists(self._download_dir):
+      shutil.rmtree(self._download_dir)
+    os.mkdir(self._download_dir)
+
   def _SetupSnapshotDir(self):
     """If it doesn't exist, create the data dir."""
+    self._Se
     if os.path.exists(self._snapshot_dir):
       self._log('Using the local data cache at %s.' % self._data_dir)
       return
@@ -98,5 +112,7 @@ class GlottoData(object):
         for x in geodata_structure.get('features', [])])
     self._languages = languages
     return languages
+
+  def GetLanguagesDetailed(self):
 
 

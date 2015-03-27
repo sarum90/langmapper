@@ -10,6 +10,8 @@ _GET_URL = ('http://glottolog.org/glottolog/language.geojson?'
     'iDisplayLength=%(count)d&'
     'iDisplayStart=%(offset)d')
 
+_DETAILED_URL = 'http://glottolog.org/resource/languoid/id/%s.json'
+
 class Server(object):
   """Server for getting results from glottolog.org."""
 
@@ -33,4 +35,11 @@ class Server(object):
         }
     response = urllib2.urlopen(url)
     return response.read()
+
+  def GetDetailedLanguage(key):
+    """Downloads the detailed language info for language named key."""
+    url = _DETAILED_URL % key
+    response = urllib2.urlopen(url)
+    return response.read()
+
     

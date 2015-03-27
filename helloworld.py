@@ -1,12 +1,85 @@
 import webapp2
 import jinja2
 
+import urllib2
+
 import os
 
 import json
 import sheetloader
 import string
 from pyglottolog.glottodata import GlottoData
+from google.appengine.api import files
+
+from google.appengine.ext import ndb
+
+_GENETICS_URL = 'http://glottolog.org/resource/languoid/id/%s.json'
+
+def DownloadLanguageGenetics(key):
+  """Downloads the language genetics for language named key."""
+  url = _GENETICS_URL % key
+  response = urllib2.urlopen(url)
+  return response.read()
+
+BUCKET_NAME = 'mewert-langmap.appspot.com'
+BUCKET = '/gs/' + BUCKET_NAME
+
+def _GetPathFor(glotto_key):
+  return os.path.join(BUCKET, 'glotto', glotto_key)
+
+def SaveData(glotto_key, data):
+  filename = _GetPathFor(glotto_key)
+  writable_file_name = files.gs.create(filename, acl='project-private')
+  print "saving"
+  print filename
+  print writable_file_name
+  with files.open(writable_file_name, 'a') as f:
+    f.write(data)
+  files.finalize(writable_file_name)
+
+def GetData(glotto_key):
+  filename = _GetPathFor(glotto_key)
+  retvals = []
+  try:
+    with files.open(filename, 'r') as f:
+      data = f.read(1000)
+      while data:
+        retvals.append(data)
+        data = f.read(1000)
+  except files.ExistenceError:
+    print filename
+    print "none?"
+    return None
+  return "".join(retvals)
+
+def DownloadAndSaveLanguageGenetics(key):
+  jsondata = DownloadLanguageGenetics(key)
+  SaveData(key, jsondata)
+  return jsondata
+
+def LoadLanguageGenetics(key):
+  return GetData(key)
+
+def GetSaveGenetics(key):
+  data = ''
+  saved = LoadLanguageGenetics(key)
+  if saved:
+    data = saved
+  else:
+    data = DownloadAndSaveLanguageGenetics(key)
+  return json.loads(data)
+
+
+print GetSaveGenetics('byan1241')
+print GetSaveGenetics('byan1241')
+print "Getting"
+print GetData("demo-testfile")
+print "Setting"
+SaveData("demo-testfile", "ohhai")
+print "Getting"
+print GetData("demo-testfile")
+print GetSaveGenetics('byan1241')
+
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -27,14 +100,25 @@ def ISOColumn(data):
         val = results.get(k, 0)
         results[k] = val + 1
   results_ordered = sorted(results.iteritems(), lambda x, y: y[1] - x[1])
+  if not results_ordered:
+    return None
+  if not results_ordered[0]:
+    return None
   return results_ordered[0][0]
+
+def GetGlotoDataForLanguage(isocode):
+  glottodata = glotto_by_iso.get(string.lower(str(isocode)), {})
+  glotto_id = glottodata.get('id')
+  if glotto_id:
+    glottodata['genetics'] = GetSaveGenetics(glotto_id)
+  return glottodata
 
 def GetGlottoData(data):
   results = []
   key = ISOColumn(data)
-  print key
-  for d in data:
-    results.append(glotto_by_iso.get(string.lower(str(d.get(key))), {}))
+  if key:
+    for d in data:
+      results.append(GetGlotoDataForLanguage(d.get(key)))
   return results
  
 class SheetsPage(webapp2.RequestHandler):
