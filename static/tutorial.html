@@ -390,7 +390,7 @@ form:</p>
 <p> Again the colors should be specified as arrays of [Red, Green, Blue] as
 before. Using this tool with our exiting code, the new code becomes: </p>
 
-<h3>Final Code</h3>
+<h3>Code with Key</h3>
 <pre>
 remapping = {
       "letteranimalthatisalsoalanguageisocode": "iso",
@@ -441,8 +441,93 @@ def key():
         }
 </pre>
 
+        <h2><li>Python Round 7: Genetic information</li></h2>
+<p> There are a few additional features that can be helpful for analysing the
+genetic information of a language. In order to assist with these analyses the
+genetic inofmration about a language has been extraced and is available in the
+glotto input argument to proces(). The glotto dict should have a key named
+'parent' which represents the glotto entry for the parent of the current
+language. That entry in turn will have it's own 'parent' all the way back to
+the the language family. </p>
+
+<p> Below we've used this information to enhance our visualization. Using the
+'symbol' key in the result dict we can draw languages as any capital letter
+directly on the map. Additionally, note that the key can take single letters in
+addition to colors to aid the viewer in deciphering the meaning of these
+letters. </p>
+
 <h3>Final Map</h3>
-        <img class='center-block' src='img/screenshot10.png' width='800px' />
+        <img class='center-block' src='img/screenshot12.png' width='800px' />
+
+<h3>Final Code</h3>
+<pre>
+remapping = {
+      'letteranimalthatisalsoalanguageisocode': 'iso',
+      'sizeoftheanimal': 'size',
+      'whywouldsomeoneraiseorowntheanimal': 'uses'
+  }
+  
+red = [170, 0, 0]
+green = [0, 170, 0]
+blue = [0, 0, 170]
+
+def setColor(result):
+    size = result['size']
+    if size == 'Small':
+        result['color'] = red
+    elif size == 'Medium':
+        result['color'] = green
+    else:
+        result['color'] = blue
+
+def setSymbol(result):
+    genetics = result['genetics']
+    if 'Indo-European' in genetics:
+        result['symbol'] = 'E'
+    elif 'Malayo-Polynesian' in genetics:
+        result['symbol'] = 'P'
+
+def remap(record):
+    result = {}
+    for k in record:
+        if k in remapping:
+            result[remapping[k]] = record[k]
+    return result
+
+def getParentList(glotto):
+    result = [glotto.get('name').get('name')]
+    current = glotto
+    while 'parent' in current:
+        current = current.get('parent')
+        result.append(current.get('name').get('name'))
+    return result
+
+def process(record, glotto):
+    if not glotto or 'latitude' not in glotto:
+        return None
+    result = remap(record)
+    result['uses'] = [] if not result['uses'] else result['uses'].split(',')
+    result['num_uses'] = len(result['uses'])
+    result['longitude'] = glotto.get('longitude')
+    result['latitude'] = glotto.get('latitude')
+    result['name'] = glotto.get('name').get('name')
+    result['genetics'] = getParentList(glotto)
+    setColor(result)
+    setSymbol(result)
+    return result
+
+def key():
+    return {
+          'name': 'Size of Animal',
+          'key': [
+                 (red, 'Small'),
+                 (green, 'Medium'),
+                 (blue, 'Large'),
+                 ('E', 'Indo-European'),
+                 ('P', 'Malayo-Polynesian')
+              ]
+        }
+</pre>
 
         <h2><li>Closing Words</li></h2>
 
