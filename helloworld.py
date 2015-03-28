@@ -16,10 +16,12 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 glotto_by_iso = {}
 glotto_by_glottocode = {}
 
+print "Loading glottodata"
 with open('glottodata.pickle', 'r') as f:
   data = pickle.load(f)
   glotto_by_iso = data
   glotto_by_glottocode = data
+print "glottodata loaded"
 
 def ISOColumn(data):
   results = {}
@@ -37,9 +39,14 @@ def ISOColumn(data):
 
 def GetGlotoDataForLanguage(isocode):
   glottodata = glotto_by_iso.get(string.lower(str(isocode)), {})
-  glotto_id = glottodata.get('id')
-  if glotto_id:
-    glottodata['genetics'] = GetSaveGenetics(glotto_id)
+  current = glottodata
+  while 'parent' in current:
+    key = current['parent']
+    if isinstance(key, dict):
+      break
+    parent = glotto_by_glottocode.get(key, {'key': key})
+    current['parent'] = parent
+    current = parent
   return glottodata
 
 def GetGlottoData(data):
