@@ -106,6 +106,8 @@ $(document).ready( function () {
       if (funct == null)
         return null;
       var output = null;
+      var input = arguments[1];
+      var glotto_input = arguments[2];
       try {
           args = [funct];
           for(var i = 1; i < arguments.length; i++) {
@@ -114,7 +116,16 @@ $(document).ready( function () {
           var ret = Sk.misceval.callsim.apply(Sk.misceval, args);
           output = Sk.ffi.remapToJs(ret);
       } catch (e) {
-          var error = e + '\n With input: ' + JSON.stringify(input, null, 4)
+          var in_string = null;
+          try {
+            in_string = JSON.stringify(input, null, 4);
+            in_string += " and glotto data: "
+            in_string += JSON.stringify(glotto_input, null, 4);
+          } catch (c) {}
+          var error = e ;
+          if (in_string) {
+            error += '\n With input: ' + in_string;
+          }
           console.dir(error);
           console.log(error);
           old_stderr = $('#stderr').text();
