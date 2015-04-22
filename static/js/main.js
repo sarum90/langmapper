@@ -1,6 +1,28 @@
 
 $(document).ready( function () {
 
+  var africafams = {name: 'African Languages by Family',
+                    code: 'Loading... re-select in a few seconds.'};
+  $.get("snippets/africafams.py", function( data ) {
+    africafams.code = data;
+  });
+
+  var africalevelsurfacetones = {
+    name: 'African Languages Colored by Count of Level Surface Tones',
+    code: 'Loading... re-select in a few seconds.'
+  };
+  $.get("snippets/africalevelsurfacetones.py", function(data) {
+    africalevelsurfacetones.code = data;
+  });
+
+  var africadownsteptones = {
+    name: 'African Languages colored by Downstep Tones',
+    code: 'Loading... re-select in a few seconds.'
+  };
+  $.get("snippets/africadownstep.py", function(data) {
+    africadownsteptones.code = data;
+  });
+
  var entityMap = {
     "&": "&amp;",
     "<": "&lt;",
@@ -19,6 +41,13 @@ $(document).ready( function () {
     });
   }
 
+  function escapeCsv(string) {
+    if (string == null) {
+      return "";
+    }
+    return String(string).replace(/"/g, '""');
+  }
+
   function SetTable(data) {
     data_ro = data[0]
     cols = []
@@ -26,27 +55,53 @@ $(document).ready( function () {
       cols.push(k);
     }
     var header_row_html = '<tr>';
+    var header_row_csv = '';
     for (var i = 0; i < cols.length; i++) {
       header_row_html += '<th>';
       header_row_html += escapeHtml(cols[i]);
       header_row_html += '</th>';
+
+      header_row_csv += '"';
+      header_row_csv += escapeCsv(cols[i]);
+      header_row_csv += '"';
+      if (i + 1 < cols.length) {
+        header_row_csv += ',';
+      }
     }
     header_row_html += '</tr>';
     
     var table = $('#data_table');
     var table_html = header_row_html;
+    var csv_data = header_row_csv;
 
     for(var i=0; i < data.length; i++) {
       row = '<tr>';
+      var csv_row = '';
       for (var j = 0; j < cols.length; j++) {
+        var obj = data[i][cols[j]];
+        if (typeof obj == 'object' &&
+            obj != null &&
+            !(obj instanceof Array)) {
+          obj = JSON.stringify(obj);
+        }
         row += '<td>';
-        row += escapeHtml(data[i][cols[j]]);
+        row += escapeHtml(obj);
         row += '</td>';
+
+        csv_row += '"';
+        csv_row += escapeCsv(obj);
+        csv_row += '"';
+        if (j + 1 < cols.length) {
+          csv_row += ',';
+        }
       }
       row += '</tr>';
       table_html += row;
+      csv_data += '\r\n'; // according to wikipedia, this is standard for csv.
+      csv_data += csv_row;
     }
     table.html(table_html);
+    window.csv_data = csv_data;
   }
 
   function outf(text)
@@ -149,9 +204,40 @@ $(document).ready( function () {
   }
   window.runit = runit;
 
+  var mapStyles = [
+    {
+      "featureType": "road",
+      "stylers": [
+        { "visibility": "off" }
+      ]
+    },{
+      "featureType": "landscape",
+      "stylers": [
+        { "visibility": "off" }
+      ]
+    },{
+      "featureType": "poi",
+      "stylers": [
+        { "visibility": "off" }
+      ]
+    },{
+      "featureType": "administrative",
+      "stylers": [
+        { "weight": 0.2 }
+      ]
+    },{
+      "elementType": "labels",
+      "stylers": [
+        { "lightness": 65 }
+      ]
+    }
+  ];
+
+
   var mapOptions = {
     center: { lat: 0, lng: 0},
-    zoom: 2
+    zoom: 2,
+    styles: mapStyles
   };
 
   var mymap = $('#map-canvas').get(0);
@@ -209,6 +295,20 @@ $(document).ready( function () {
       stroke_weight = 1;
     }
    var color = processColor(c);
+    var bgmarker = new google.maps.Marker({
+      position: latlng,
+      icon: {
+        path: svg_path,
+        scale: scale,
+        fillColor: 'white',
+        fillOpacity: 1,
+        strokeColor: 'white',
+        strokeOpacity: 1,
+        strokeWeight: stroke_weight * 3.0,
+      },
+      map: map,
+      title: name
+    });
     var marker = new google.maps.Marker({
       position: latlng,
       icon: {
@@ -235,6 +335,7 @@ $(document).ready( function () {
    // };
    // // Add the circle for this city to the map.
    // var marker = new google.maps.Circle(circleOptions);
+    markers.push(bgmarker);
     markers.push(marker);
   }
 
@@ -277,6 +378,7 @@ $(document).ready( function () {
     if(window.online) {
       setMarkers(filtered_data);
     }
+    window.filtered_data = filtered_data;
     var map_key_html = '';
     if (keyf) {
       var key = runPythonOn(keyf);
@@ -712,7 +814,10 @@ $(document).ready( function () {
         '      "key": make_keys(red_to_white, BIN_LINES)\n' +
         '    }\n' +
         '\n'
-    }
+    },
+    'afrifams': africafams,
+    'africalevelsurfacetones': africalevelsurfacetones,
+    'africadownsteptones': africadownsteptones
   }
 
   var select_options = '<option value=""></option>';
@@ -730,6 +835,18 @@ $(document).ready( function () {
       editor.setValue(code);
     }
   });
+
+  function to_csv()
+  {
+    if (Blob && window.csv_data) {
+      var blob = new Blob([window.csv_data], {type: "text/csv;charset=utf-8"});
+      saveAs(blob, "data.csv");
+    } else {
+      alert('Saving to CSV only works after "Map All" has been pressed ' +
+            'and not on IE because IE is a sad browser.');
+    }
+  }
+  window.to_csv = to_csv;
 
 });
 
