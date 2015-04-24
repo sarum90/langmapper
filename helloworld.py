@@ -4,6 +4,7 @@ import jinja2
 import os
 
 import json
+import re
 import pickle
 import sheetloader
 import string
@@ -25,20 +26,34 @@ print "glottodata loaded"
 
 def ISOColumn(data):
   results = {}
+  glotto_results = {}
   for d in data:
     for k, v in d.iteritems():
       if v and type(v) is str and len(v) == 3:
         val = results.get(k, 0)
         results[k] = val + 1
+      if (v and type(v) is str and len(v) == 8 and
+          re.match(r'^[a-z]{4}\d{4}$', v)):
+        val = glotto_results.get(k, 0)
+        glotto_results[k] = val + 1
   results_ordered = sorted(results.iteritems(), lambda x, y: y[1] - x[1])
-  if not results_ordered:
-    return None
-  if not results_ordered[0]:
-    return None
-  return results_ordered[0][0]
+  glotto_results_ordered = sorted(glotto_results.iteritems(),
+                                  lambda x, y: y[1] - x[1])
+  iso = None
+  glotto = None
+  if results_ordered and results_ordered[0]:
+    iso = results_ordered[0][0]
+  if glotto_results_ordered and glotto_results_ordered[0]:
+    glotto = glotto_results_ordered[0][0]
+  return iso, glotto
 
-def GetGlotoDataForLanguage(isocode):
-  glottodata = glotto_by_iso.get(string.lower(str(isocode)), {})
+def GetGlotoDataForLanguage(glottocode, isocode):
+  glottodata = None
+  if (glottocode and type(glottocode) is str and len(glottocode) == 8 and
+      re.match(r'^[a-z]{4}\d{4}$', glottocode)):
+    glottodata = glotto_by_glottocode.get(string.lower(unicode(glottocode)), {})
+  if not glottodata:
+    glottodata = glotto_by_iso.get(string.lower(unicode(isocode)), {})
   current = glottodata
   while 'parent' in current:
     key = current['parent']
@@ -51,10 +66,10 @@ def GetGlotoDataForLanguage(isocode):
 
 def GetGlottoData(data):
   results = []
-  key = ISOColumn(data)
-  if key:
+  iso, glotto = ISOColumn(data)
+  if iso or glotto:
     for d in data:
-      results.append(GetGlotoDataForLanguage(d.get(key)))
+      results.append(GetGlotoDataForLanguage(d.get(glotto), d.get(iso)))
   return results
  
 class SheetsPage(webapp2.RequestHandler):
