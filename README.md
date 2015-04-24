@@ -1,10 +1,10 @@
 # LangMap
 
-This is the source code for (LangMap)[http://mewert-langmap.appspot.com/].
+This is the source code for [LangMap](http://mewert-langmap.appspot.com/).
 
 ## How to Develop:
 
-- Download the (Python Appengine SDK)[https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python].
+- Download the [Python Appengine SDK](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python).
 - Go to a terminal and clone this repository:
 
 ```bash
@@ -23,7 +23,7 @@ dev_appserver.py .
 - If this has errors:
   - Maybe you need to install other python packages? `sudo pip install pycrypto`
   - Something else? Ask me, I might be able to help.
-- Navigate to (localhost:8080)[http://localhost:8080]
+- Navigate to [localhost:8080](http://localhost:8080)
 - You now have a running Langmap DevServer, click on a spreadsheet to view.
 - In a separate terminal, or in a text editor like TextMate, Sublime, or
   Notepad++, edit `static/js/main.js` in you favorite editor.
