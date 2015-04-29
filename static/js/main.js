@@ -281,62 +281,56 @@ $(document).ready( function () {
 
   function setMarker(latitude, longitude, name, c, symbol) {
     latlng = { lat: latitude, lng: longitude};
-    //var marker = new google.maps.Marker({
-    //    position: latlng,
-    //    map: map,
-    //    title: name
-    //});
-    svg_path = google.maps.SymbolPath.CIRCLE;
-    scale = 5;
-    stroke_weight = 0;
-    if (symbol in letter_paths) {
-      svg_path = letter_paths[symbol];
-      scale = 0.01;
-      stroke_weight = 1;
+
+    if (symbol && !(symbol in letter_paths)) {
+      var marker = new MarkerWithLabel({
+        position: latlng,
+        map: map,
+        labelContent: symbol,
+        crossImage: null
+      })
+      markers.push(marker);
+    } else {
+      svg_path = google.maps.SymbolPath.CIRCLE;
+      scale = 5;
+      stroke_weight = 0;
+      if (symbol in letter_paths) {
+        svg_path = letter_paths[symbol];
+        scale = 0.01;
+        stroke_weight = 1;
+      }
+     var color = processColor(c);
+      var bgmarker = new google.maps.Marker({
+        position: latlng,
+        icon: {
+          path: svg_path,
+          scale: scale,
+          fillColor: 'white',
+          fillOpacity: 1,
+          strokeColor: 'white',
+          strokeOpacity: 1,
+          strokeWeight: stroke_weight * 3.0,
+        },
+        map: map,
+        title: name
+      });
+      var marker = new google.maps.Marker({
+        position: latlng,
+        icon: {
+          path: svg_path,
+          scale: scale,
+          fillColor: color,
+          fillOpacity: 1,
+          strokeColor: color,
+          strokeOpacity: 1,
+          strokeWeight: stroke_weight,
+        },
+        map: map,
+        title: name
+      });
+      markers.push(bgmarker);
+      markers.push(marker);
     }
-   var color = processColor(c);
-    var bgmarker = new google.maps.Marker({
-      position: latlng,
-      icon: {
-        path: svg_path,
-        scale: scale,
-        fillColor: 'white',
-        fillOpacity: 1,
-        strokeColor: 'white',
-        strokeOpacity: 1,
-        strokeWeight: stroke_weight * 3.0,
-      },
-      map: map,
-      title: name
-    });
-    var marker = new google.maps.Marker({
-      position: latlng,
-      icon: {
-        path: svg_path,
-        scale: scale,
-        fillColor: color,
-        fillOpacity: 1,
-        strokeColor: color,
-        strokeOpacity: 1,
-        strokeWeight: stroke_weight,
-      },
-      map: map,
-      title: name
-    });
-   //var circleOptions = {
-   //   strokeColor: color,
-   //   strokeOpacity: 0.8,
-   //   strokeWeight: 2,
-   //   fillColor: color,
-   //   fillOpacity: 0.35,
-   //   map: map,
-   //   center: latlng,
-   //   radius: 100000
-   // };
-   // // Add the circle for this city to the map.
-   // var marker = new google.maps.Circle(circleOptions);
-    markers.push(bgmarker);
-    markers.push(marker);
   }
 
   function setMarkers(data) {
