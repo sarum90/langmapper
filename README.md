@@ -13,7 +13,7 @@ from the public repository.
 
 ```bash
 cd ~/folder/you/want/to/install/this/in
-git clone git@github.com:sarum90/langmap.git
+git clone git@github.com:sarum90/langmapper.git
 ```
 
 - cd into the directory you just cloned and run the dev server:
