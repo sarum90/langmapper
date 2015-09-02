@@ -45,6 +45,13 @@ def ISOColumn(data):
     iso = results_ordered[0][0]
   if glotto_results_ordered and glotto_results_ordered[0]:
     glotto = glotto_results_ordered[0][0]
+  if data:
+    if 'iso' in data[0]:
+      iso = 'iso'
+    if 'glotto' in data[0]:
+      glotto = 'glotto'
+    if 'glottocode' in data[0]:
+      glotto = 'glottocode'
   return iso, glotto
 
 def GetGlotoDataForLanguage(glottocode, isocode):
