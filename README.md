@@ -35,3 +35,15 @@ dev_appserver.py .
   - Refresh the page.
     - Tada, you are editting the source, no need to restart the server every
       time.
+
+# License:
+
+MIT for the langmapper code.
+
+Note, some parts of this repository are not langmapper code and instead are
+dependencies, included in the repo for convenience. These libraries retain
+their original license. I've listed the licensing below, as best I can tell:
+
+- gspread - BSD-like, see https://github.com/burnash/gspread, see gspread/LICENSE.txt
+- oauth2client - Apache 2, see file headers
+- httplib2 - See file headers, looks BSD-like
