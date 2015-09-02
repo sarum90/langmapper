@@ -46,4 +46,5 @@ their original license. I've listed the licensing below, as best I can tell:
 
 - gspread - BSD-like, see https://github.com/burnash/gspread, see gspread/LICENSE.txt
 - oauth2client - Apache 2, see file headers
+- apiclient - Apache 2, see file headers
 - httplib2 - See file headers, looks BSD-like
