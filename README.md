@@ -7,6 +7,10 @@ This is the source code for [LangMap](http://mewert-langmap.appspot.com/).
 - Download the [Python Appengine SDK](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python).
 - Go to a terminal and clone this repository:
 
+Ask Marcus for the private key to get access to google spreadsheets. This will
+have to be put in as privatekey.pem in the main directory, but has been removed
+from the public repository.
+
 ```bash
 cd ~/folder/you/want/to/install/this/in
 git clone git@github.com:sarum90/langmap.git
