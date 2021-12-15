@@ -29,10 +29,10 @@ def ISOColumn(data):
   glotto_results = {}
   for d in data:
     for k, v in d.iteritems():
-      if v and type(v) is str and len(v) == 3:
+      if v and type(v) is unicode and len(v) == 3:
         val = results.get(k, 0)
         results[k] = val + 1
-      if (v and type(v) is str and len(v) == 8 and
+      if (v and type(v) is unicode and len(v) == 8 and
           re.match(r'^[a-z]{4}\d{4}$', v)):
         val = glotto_results.get(k, 0)
         glotto_results[k] = val + 1
@@ -56,7 +56,7 @@ def ISOColumn(data):
 
 def GetGlotoDataForLanguage(glottocode, isocode):
   glottodata = None
-  if (glottocode and type(glottocode) is str and len(glottocode) == 8 and
+  if (glottocode and type(glottocode) is unicode and len(glottocode) == 8 and
       re.match(r'^[a-z]{4}\d{4}$', glottocode)):
     glottodata = glotto_by_glottocode.get(string.lower(unicode(glottocode)), {})
   if not glottodata:
@@ -78,7 +78,7 @@ def GetGlottoData(data):
     for d in data:
       results.append(GetGlotoDataForLanguage(d.get(glotto), d.get(iso)))
   return results
- 
+
 class SheetsPage(webapp2.RequestHandler):
     def get(self):
         sheets = sheetloader.GetAllWorksheets()

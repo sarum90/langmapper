@@ -52,8 +52,7 @@
     <ul>
     {% for s_id, s_obj in sheets.iteritems() %}
       {% for w_id, w_obj in s_obj['worksheets'].iteritems() %}
-        <li><a href='map?{{s_id }}/{{w_id}}'>{{s_obj['title']}} | {{w_obj['title']}}</a>
-            by {{s_obj['author']}}</li>
+        <li><a href='map?{{s_id }}/{{w_id}}'>{{s_obj['title']}} | {{w_obj['title']}}</a> </li>
       {% endfor %}
     {% endfor %}
     </ul>
